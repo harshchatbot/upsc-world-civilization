@@ -5,7 +5,7 @@ import '../../../data/models/era_node.dart';
 import '../../../data/models/user_progress.dart';
 import '../../home/providers/home_providers.dart';
 import '../providers/map_providers.dart';
-import '../widgets/era_node_widget.dart';
+import '../widgets/realistic_world_map.dart';
 
 class CivilizationMapScreen extends ConsumerWidget {
   const CivilizationMapScreen({super.key});
@@ -29,41 +29,42 @@ class CivilizationMapScreen extends ConsumerWidget {
             error: (Object error, StackTrace stackTrace) =>
                 const Center(child: Text('Failed to load progress.')),
             data: (UserProgress progress) {
-              return InteractiveViewer(
-                minScale: 0.7,
-                maxScale: 2.0,
-                constrained: false,
-                child: Container(
-                  width: 1400,
-                  height: 900,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[Color(0xFFE5D7C0), Color(0xFFCFBB99)],
-                    ),
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      CustomPaint(
-                        size: const Size(1400, 900),
-                        painter: _PathPainter(),
+              const double oldMapWidth = 1400;
+              const double oldMapHeight = 900;
+
+              return RealisticWorldMap(
+                backgroundAssetPath:
+                    'assets/maps/world_ancient_parchment_hd.webp',
+                nodes: nodes
+                    .map((EraNode node) {
+                      final bool unlocked =
+                          node.order <= progress.unlockedOrder;
+                      final bool completed = progress.completedNodeIds.contains(
+                        node.id,
+                      );
+                      return RealisticMapNode(
+                        id: node.id,
+                        label: node.title,
+                        x: node.dx / oldMapWidth,
+                        y: node.dy / oldMapHeight,
+                        icon: _iconForOrder(node.order),
+                        unlocked: unlocked,
+                        completed: completed,
+                      );
+                    })
+                    .toList(growable: false),
+                onNodeTap: (RealisticMapNode tappedNode) {
+                  context.push('/scene/${tappedNode.id}');
+                },
+                onLockedNodeTap: (RealisticMapNode lockedNode) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${lockedNode.label} is locked. Complete earlier eras first.',
                       ),
-                      ...nodes.map((EraNode node) {
-                        final bool unlocked =
-                            node.order <= progress.unlockedOrder;
-                        final bool completed = progress.completedNodeIds
-                            .contains(node.id);
-                        return EraNodeWidget(
-                          node: node,
-                          unlocked: unlocked,
-                          completed: completed,
-                          onTap: () => context.push('/scene/${node.id}'),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
           );
@@ -73,24 +74,19 @@ class CivilizationMapScreen extends ConsumerWidget {
   }
 }
 
-class _PathPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = const Color(0x995A3E2B)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-
-    final Path path = Path()
-      ..moveTo(220, 570)
-      ..quadraticBezierTo(380, 460, 450, 440)
-      ..quadraticBezierTo(630, 370, 720, 350)
-      ..quadraticBezierTo(920, 300, 980, 300)
-      ..quadraticBezierTo(1160, 240, 1240, 230);
-
-    canvas.drawPath(path, paint);
+IconData _iconForOrder(int order) {
+  switch (order) {
+    case 0:
+      return Icons.forest;
+    case 1:
+      return Icons.account_balance;
+    case 2:
+      return Icons.menu_book;
+    case 3:
+      return Icons.temple_hindu;
+    case 4:
+      return Icons.auto_awesome;
+    default:
+      return Icons.place;
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
