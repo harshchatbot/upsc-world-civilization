@@ -1,0 +1,63 @@
+# =========================
+# System
+# =========================
+.DS_Store
+*.log
+
+# =========================
+# IDE
+# =========================
+.idea/
+.vscode/
+*.iml
+
+# =========================
+# Secrets / Keys
+# =========================
+.env
+.env.*
+*.keystore
+*.jks
+**/android/app/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+
+# =========================
+# Flutter / Dart
+# =========================
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.metadata
+**/build/
+**/.packages
+
+# =========================
+# Android
+# =========================
+**/.gradle/
+**/local.properties
+**/android/key.properties
+
+# =========================
+# iOS (future safe)
+# =========================
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Runner.xcworkspace
+
+# =========================
+# Backend
+# =========================
+backend/**/.env
+backend/**/.env.*
+backend/**/node_modules/
+backend/**/dist/
+backend/**/build/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/.venv/
+backend/**/venv/
+backend/**/.pytest_cache/
