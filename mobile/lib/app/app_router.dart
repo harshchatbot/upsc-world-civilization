@@ -17,8 +17,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/map',
       name: 'map',
-      builder: (BuildContext context, GoRouterState state) =>
-          const CivilizationMapScreen(),
+      builder: (BuildContext context, GoRouterState state) {
+        final String? focusNodeId = state.uri.queryParameters['focusNodeId'];
+        return CivilizationMapScreen(focusNodeId: focusNodeId);
+      },
     ),
     GoRoute(
       path: '/scene/:nodeId',

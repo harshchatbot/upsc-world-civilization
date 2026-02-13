@@ -148,6 +148,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             xpGain: xpGain,
                           );
 
+                      final EraNode? nextNode = nodes
+                          .cast<EraNode?>()
+                          .firstWhere(
+                            (EraNode? n) => n?.order == node.order + 1,
+                            orElse: () => null,
+                          );
+
                       if (!context.mounted) return;
                       final ScaffoldMessengerState messenger =
                           ScaffoldMessenger.of(context);
@@ -158,7 +165,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                           ),
                         ),
                       );
-                      context.go('/map');
+                      final String focusNodeId = (nextNode ?? node).id;
+                      context.go(
+                        '/map?focusNodeId=${Uri.encodeComponent(focusNodeId)}',
+                      );
                     },
                     child: Text(
                       _submitted

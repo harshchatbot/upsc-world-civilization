@@ -8,6 +8,8 @@ Repository layout:
 Use this file to track what was added/changed and which commands were run.
 
 ## Update Log
+- 2026-02-13: Fixed map asset filename mismatch so background loads (`world_ancient_parchment.png`).
+- 2026-02-13: Added map camera controls with initial focus, `focusOnNode` animation API, and post-quiz camera jump to next era using `/map?focusNodeId=...`.
 - 2026-02-13: Added `RealisticWorldMap` widget with zoom/pan, animated nodes, and fog-of-war overlay, and wired it into the map screen.
 - 2026-02-13: Upgraded Android Google Services Gradle plugin from `4.3.15` to `4.4.4`.
 - 2026-02-13: Initialized Flutter MVP app and moved all Flutter files into `mobile/`.
@@ -15,6 +17,10 @@ Use this file to track what was added/changed and which commands were run.
 - 2026-02-13: Added root `README.md` and root `.gitignore`.
 
 ## Command Log
+- `cd mobile && flutter analyze`
+- `apply_patch` (updated map background asset path to `.png`)
+- `dart format mobile/lib/features/map/widgets/realistic_world_map.dart mobile/lib/features/map/presentation/civilization_map_screen.dart mobile/lib/features/quiz/presentation/quiz_screen.dart mobile/lib/app/app_router.dart`
+- `cd mobile && flutter analyze`
 - `dart format mobile/lib/features/map/widgets/realistic_world_map.dart mobile/lib/features/map/presentation/civilization_map_screen.dart`
 - `cd mobile && flutter analyze`
 - `sed -n '1,220p' mobile/android/settings.gradle.kts`

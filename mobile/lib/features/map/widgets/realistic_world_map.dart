@@ -28,6 +28,37 @@ class RealisticMapNode {
   final Color iconColor;
 }
 
+/// External camera controller for [RealisticWorldMap].
+///
+/// Call [focusOnNode] to animate camera movement after map is mounted.
+class RealisticWorldMapController {
+  _RealisticWorldMapState? _state;
+
+  void _attach(_RealisticWorldMapState state) {
+    _state = state;
+  }
+
+  void _detach(_RealisticWorldMapState state) {
+    if (_state == state) {
+      _state = null;
+    }
+  }
+
+  Future<void> focusOnNode(
+    String nodeId, {
+    double? scale,
+    Duration duration = const Duration(milliseconds: 700),
+    Curve curve = Curves.easeInOutCubic,
+  }) async {
+    await _state?._focusOnNodeById(
+      nodeId,
+      scale: scale,
+      duration: duration,
+      curve: curve,
+    );
+  }
+}
+
 /// A high-performance, zoomable and pannable civilization map.
 ///
 /// Replace [backgroundAssetPath] with any high-resolution historical map image.
@@ -39,21 +70,31 @@ class RealisticWorldMap extends StatefulWidget {
     required this.nodes,
     required this.onNodeTap,
     required this.backgroundAssetPath,
+    this.controller,
     this.onLockedNodeTap,
     this.baseMapSize = const Size(2400, 1500),
+    this.initialScale = 1.4,
     this.minScale = 0.55,
     this.maxScale = 2.8,
+    this.initialFocusNodeId,
   });
 
   final List<RealisticMapNode> nodes;
   final ValueChanged<RealisticMapNode> onNodeTap;
   final ValueChanged<RealisticMapNode>? onLockedNodeTap;
   final String backgroundAssetPath;
+  final RealisticWorldMapController? controller;
 
   /// Virtual canvas size used for normalized coordinate placement.
   final Size baseMapSize;
+
+  /// Default camera zoom when map opens.
+  final double initialScale;
   final double minScale;
   final double maxScale;
+
+  /// If null, map will auto-focus the first unlocked node.
+  final String? initialFocusNodeId;
 
   @override
   State<RealisticWorldMap> createState() => _RealisticWorldMapState();
@@ -65,6 +106,11 @@ class _RealisticWorldMapState extends State<RealisticWorldMap>
   final TransformationController _transformController =
       TransformationController();
 
+  AnimationController? _cameraController;
+  Size _viewportSize = Size.zero;
+  bool _didApplyInitialCamera = false;
+  List<RealisticMapNode> _orderedNodes = const <RealisticMapNode>[];
+
   @override
   void initState() {
     super.initState();
@@ -72,110 +118,223 @@ class _RealisticWorldMapState extends State<RealisticWorldMap>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
+    widget.controller?._attach(this);
+  }
+
+  @override
+  void didUpdateWidget(covariant RealisticWorldMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(this);
+      widget.controller?._attach(this);
+    }
+
+    if (oldWidget.initialFocusNodeId != widget.initialFocusNodeId &&
+        widget.initialFocusNodeId != null &&
+        _didApplyInitialCamera) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusOnNodeById(widget.initialFocusNodeId!);
+      });
+    }
   }
 
   @override
   void dispose() {
+    widget.controller?._detach(this);
+    _cameraController?.dispose();
     _pulseController.dispose();
     _transformController.dispose();
     super.dispose();
   }
 
+  Future<void> _focusOnNodeById(
+    String nodeId, {
+    double? scale,
+    Duration duration = const Duration(milliseconds: 700),
+    Curve curve = Curves.easeInOutCubic,
+  }) async {
+    final RealisticMapNode? targetNode = _orderedNodes
+        .cast<RealisticMapNode?>()
+        .firstWhere(
+          (RealisticMapNode? node) => node?.id == nodeId,
+          orElse: () => null,
+        );
+    if (targetNode == null || _viewportSize == Size.zero) {
+      return;
+    }
+
+    final Matrix4 targetMatrix = _buildCameraMatrix(
+      target: _offsetForNode(targetNode, widget.baseMapSize),
+      viewportSize: _viewportSize,
+      scale: scale ?? widget.initialScale,
+    );
+
+    _cameraController?.dispose();
+    _cameraController = AnimationController(vsync: this, duration: duration);
+    final Animation<Matrix4> animation = Matrix4Tween(
+      begin: _transformController.value,
+      end: targetMatrix,
+    ).animate(CurvedAnimation(parent: _cameraController!, curve: curve));
+
+    void listener() {
+      _transformController.value = animation.value;
+    }
+
+    animation.addListener(listener);
+    await _cameraController!.forward(from: 0);
+    animation.removeListener(listener);
+  }
+
+  Matrix4 _buildCameraMatrix({
+    required Offset target,
+    required Size viewportSize,
+    required double scale,
+  }) {
+    // Camera matrix recipe:
+    // 1. Translate the map so the target lands near viewport center.
+    // 2. Apply scale for game-like zoom.
+    // Swap this with tile-projection math if you later move to a true tile map.
+    return Matrix4.identity()
+      ..translateByDouble(
+        -target.dx + viewportSize.width / 2,
+        -target.dy + viewportSize.height / 2,
+        0,
+        1,
+      )
+      ..scaleByDouble(scale, scale, 1, 1);
+  }
+
+  void _applyInitialCamera() {
+    if (_didApplyInitialCamera ||
+        _viewportSize == Size.zero ||
+        _orderedNodes.isEmpty) {
+      return;
+    }
+
+    final RealisticMapNode fallbackNode = _orderedNodes.firstWhere(
+      (RealisticMapNode n) => n.unlocked,
+      orElse: () => _orderedNodes.first,
+    );
+
+    final RealisticMapNode targetNode = widget.initialFocusNodeId == null
+        ? fallbackNode
+        : _orderedNodes.firstWhere(
+            (RealisticMapNode n) => n.id == widget.initialFocusNodeId,
+            orElse: () => fallbackNode,
+          );
+
+    _transformController.value = _buildCameraMatrix(
+      target: _offsetForNode(targetNode, widget.baseMapSize),
+      viewportSize: _viewportSize,
+      scale: widget.initialScale,
+    );
+    _didApplyInitialCamera = true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<RealisticMapNode> orderedNodes = List<RealisticMapNode>.from(
-      widget.nodes,
-    )..sort((RealisticMapNode a, RealisticMapNode b) => a.x.compareTo(b.x));
+    _orderedNodes = List<RealisticMapNode>.from(widget.nodes)
+      ..sort((RealisticMapNode a, RealisticMapNode b) => a.x.compareTo(b.x));
 
-    final List<Offset> orderedOffsets = orderedNodes
+    final List<Offset> orderedOffsets = _orderedNodes
         .map((RealisticMapNode n) => _offsetForNode(n, widget.baseMapSize))
         .toList(growable: false);
 
-    final List<Offset> lockedOffsets = orderedNodes
+    final List<Offset> lockedOffsets = _orderedNodes
         .where((RealisticMapNode n) => !n.unlocked)
         .map((RealisticMapNode n) => _offsetForNode(n, widget.baseMapSize))
         .toList(growable: false);
 
-    return ClipRect(
-      child: InteractiveViewer(
-        transformationController: _transformController,
-        minScale: widget.minScale,
-        maxScale: widget.maxScale,
-        boundaryMargin: const EdgeInsets.all(240),
-        constrained: false,
-        child: RepaintBoundary(
-          child: SizedBox(
-            width: widget.baseMapSize.width,
-            height: widget.baseMapSize.height,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: Image.asset(
-                    widget.backgroundAssetPath,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.low,
-                    errorBuilder:
-                        (
-                          BuildContext context,
-                          Object error,
-                          StackTrace? stackTrace,
-                        ) {
-                          return const DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: <Color>[
-                                  Color(0xFFDED2BC),
-                                  Color(0xFFC8B08E),
-                                ],
-                              ),
-                            ),
-                          );
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        _viewportSize = Size(constraints.maxWidth, constraints.maxHeight);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _applyInitialCamera();
+        });
+
+        return ClipRect(
+          child: InteractiveViewer(
+            transformationController: _transformController,
+            minScale: widget.minScale,
+            maxScale: widget.maxScale,
+            boundaryMargin: const EdgeInsets.all(240),
+            constrained: false,
+            child: RepaintBoundary(
+              child: SizedBox(
+                width: widget.baseMapSize.width,
+                height: widget.baseMapSize.height,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: Image.asset(
+                        widget.backgroundAssetPath,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low,
+                        errorBuilder:
+                            (
+                              BuildContext context,
+                              Object error,
+                              StackTrace? stackTrace,
+                            ) {
+                              return const DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: <Color>[
+                                      Color(0xFFDED2BC),
+                                      Color(0xFFC8B08E),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          painter: _NodePathPainter(
+                            nodeOffsets: orderedOffsets,
+                            unlockedCount: _orderedNodes
+                                .where((RealisticMapNode n) => n.unlocked)
+                                .length,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          painter: _FogPainter(
+                            size: widget.baseMapSize,
+                            lockedOffsets: lockedOffsets,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ..._orderedNodes.map(
+                      (RealisticMapNode node) => _EraNodeMarker(
+                        node: node,
+                        pulse: _pulseController,
+                        mapSize: widget.baseMapSize,
+                        onTap: () {
+                          if (node.unlocked) {
+                            widget.onNodeTap(node);
+                            return;
+                          }
+                          widget.onLockedNodeTap?.call(node);
                         },
-                  ),
-                ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: _NodePathPainter(
-                        nodeOffsets: orderedOffsets,
-                        unlockedCount: orderedNodes
-                            .where((RealisticMapNode n) => n.unlocked)
-                            .length,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: _FogPainter(
-                        size: widget.baseMapSize,
-                        lockedOffsets: lockedOffsets,
-                      ),
-                    ),
-                  ),
-                ),
-                ...orderedNodes.map(
-                  (RealisticMapNode node) => _EraNodeMarker(
-                    node: node,
-                    pulse: _pulseController,
-                    mapSize: widget.baseMapSize,
-                    onTap: () {
-                      if (node.unlocked) {
-                        widget.onNodeTap(node);
-                        return;
-                      }
-                      widget.onLockedNodeTap?.call(node);
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

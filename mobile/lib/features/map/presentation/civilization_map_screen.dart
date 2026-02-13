@@ -7,11 +7,23 @@ import '../../home/providers/home_providers.dart';
 import '../providers/map_providers.dart';
 import '../widgets/realistic_world_map.dart';
 
-class CivilizationMapScreen extends ConsumerWidget {
-  const CivilizationMapScreen({super.key});
+class CivilizationMapScreen extends ConsumerStatefulWidget {
+  const CivilizationMapScreen({super.key, this.focusNodeId});
+
+  final String? focusNodeId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CivilizationMapScreen> createState() =>
+      _CivilizationMapScreenState();
+}
+
+class _CivilizationMapScreenState extends ConsumerState<CivilizationMapScreen> {
+  final RealisticWorldMapController _mapController =
+      RealisticWorldMapController();
+  bool _didAnimateRequestedFocus = false;
+
+  @override
+  Widget build(BuildContext context) {
     final AsyncValue<List<EraNode>> nodesAsync = ref.watch(eraNodesProvider);
     final AsyncValue<UserProgress> progressAsync = ref.watch(
       progressControllerProvider,
@@ -31,28 +43,40 @@ class CivilizationMapScreen extends ConsumerWidget {
             data: (UserProgress progress) {
               const double oldMapWidth = 1400;
               const double oldMapHeight = 900;
+              final List<RealisticMapNode> mapNodes = nodes
+                  .map((EraNode node) {
+                    final bool unlocked = node.order <= progress.unlockedOrder;
+                    final bool completed = progress.completedNodeIds.contains(
+                      node.id,
+                    );
+                    return RealisticMapNode(
+                      id: node.id,
+                      label: node.title,
+                      x: node.dx / oldMapWidth,
+                      y: node.dy / oldMapHeight,
+                      icon: _iconForOrder(node.order),
+                      unlocked: unlocked,
+                      completed: completed,
+                    );
+                  })
+                  .toList(growable: false);
+
+              if (!_didAnimateRequestedFocus && widget.focusNodeId != null) {
+                _didAnimateRequestedFocus = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _mapController.focusOnNode(
+                    widget.focusNodeId!,
+                    duration: const Duration(milliseconds: 850),
+                  );
+                });
+              }
 
               return RealisticWorldMap(
+                controller: _mapController,
                 backgroundAssetPath:
-                    'assets/maps/world_ancient_parchment_hd.webp',
-                nodes: nodes
-                    .map((EraNode node) {
-                      final bool unlocked =
-                          node.order <= progress.unlockedOrder;
-                      final bool completed = progress.completedNodeIds.contains(
-                        node.id,
-                      );
-                      return RealisticMapNode(
-                        id: node.id,
-                        label: node.title,
-                        x: node.dx / oldMapWidth,
-                        y: node.dy / oldMapHeight,
-                        icon: _iconForOrder(node.order),
-                        unlocked: unlocked,
-                        completed: completed,
-                      );
-                    })
-                    .toList(growable: false),
+                    'assets/maps/world_ancient_parchment.png',
+                initialScale: 1.4,
+                nodes: mapNodes,
                 onNodeTap: (RealisticMapNode tappedNode) {
                   context.push('/scene/${tappedNode.id}');
                 },
