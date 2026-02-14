@@ -1,72 +1,102 @@
 {
-  "id": "fire_001",
-  "nodeId": "stone_age",
+  "sceneId": "fire_001",
   "title": {
-    "en": "Discovery of Fire",
-    "hi": "अग्नि की खोज"
+    "en": "The First Spark",
+    "hi": "पहली चिंगारी"
   },
-  "backgroundAsset": "assets/maps/world_ancient_parchment.png",
   "layers": [
-    {
-      "asset": "assets/maps/world_ancient_parchment.png",
-      "depth": 0.08,
-      "alignment": { "x": 0.5, "y": 0.5 },
-      "opacity": 0.12
-    },
-    {
-      "asset": "assets/maps/world_ancient_parchment.png",
-      "depth": 0.16,
-      "alignment": { "x": 0.52, "y": 0.5 },
-      "opacity": 0.08
-    }
+    { "id": "bg_far", "asset": "assets/bg/bg_far.png", "parallax": 0.08 },
+    { "id": "bg_mid", "asset": "assets/bg/bg_mid.png", "parallax": 0.16 },
+    { "id": "fg", "asset": "assets/bg/bg_fg.png", "parallax": 0.25 }
   ],
   "audio": {
-    "ambientAsset": "assets/audio/ember_loop.mp3",
-    "musicAsset": "assets/audio/drone_loop.mp3",
-    "ambientVolume": 0.55,
-    "musicVolume": 0.0
+    "ambient": { "asset": "assets/audio/ambient_wind.mp3", "volume": 0.55 },
+    "fireLoop": { "asset": "assets/audio/fire_loop.mp3", "volume": 0.10 },
+    "sfx": {
+      "thunder": "assets/audio/thunder.mp3",
+      "ignite": "assets/audio/ignite.mp3",
+      "uiNext": "assets/audio/ui_next.mp3",
+      "correct": "assets/audio/correct.mp3",
+      "wrong": "assets/audio/wrong.mp3"
+    }
   },
   "steps": [
     {
-      "id": "s1",
       "type": "dialogue",
+      "speaker": "Narrator",
       "text": {
-        "en": "Night falls. A spark catches dry grass and the first controlled flame steadies in your camp.",
-        "hi": "रात होती है। सूखी घास में चिंगारी लगती है और आपके शिविर में पहली नियंत्रित आग स्थिर हो जाती है।"
+        "en": "The sky darkens over your camp as cold wind sweeps the valley.",
+        "hi": "ठंडी हवा घाटी में बहती है और आपके शिविर के ऊपर आकाश अंधेरा हो जाता है।"
       }
     },
+    { "type": "sfx", "key": "thunder" },
     {
-      "id": "s2",
-      "type": "prompt",
-      "text": {
-        "en": "Observe how fire changes food, safety, and social gathering patterns.",
-        "hi": "देखिए कि आग भोजन, सुरक्षा और सामाजिक एकत्रीकरण के तरीके कैसे बदलती है।"
-      },
-      "promptLabel": {
-        "en": "Observe the Hearth",
-        "hi": "अग्निकुंड का निरीक्षण करें"
-      }
-    },
-    {
-      "id": "s3",
       "type": "dialogue",
+      "speaker": "Elder",
       "text": {
-        "en": "With warmth and cooked food, mobility and survival improve. Knowledge now spreads around the hearth.",
-        "hi": "गर्मी और पके भोजन के साथ गतिशीलता और जीवित रहने की क्षमता बढ़ती है। अब ज्ञान अग्निकुंड के आसपास फैलता है।"
+        "en": "Lightning struck the dry tree. We must carry that flame before rain kills it.",
+        "hi": "बिजली सूखे पेड़ पर गिरी है। बारिश उससे पहले आग बुझा दे, उससे पहले हमें लौ बचानी होगी।"
       }
     },
     {
-      "id": "s4",
-      "type": "quiz",
+      "type": "dialogue",
+      "speaker": "Narrator",
       "text": {
-        "en": "Checkpoint unlocked. Test your understanding before moving to the next era.",
-        "hi": "जांच बिंदु खुल गया है। अगले युग में जाने से पहले अपनी समझ परखें।"
-      },
-      "cta": {
-        "en": "Start Quiz",
-        "hi": "क्विज़ शुरू करें"
+        "en": "You gather bark, grass, and ash to protect a tiny ember.",
+        "hi": "आप छोटी चिंगारी को बचाने के लिए छाल, घास और राख इकट्ठा करते हैं।"
       }
-    }
+    },
+    {
+      "type": "interaction",
+      "interactionId": "drag_ember",
+      "prompt": {
+        "en": "Drag the ember to the hearth to start controlled fire.",
+        "hi": "नियंत्रित आग शुरू करने के लिए चिंगारी को अग्निकुंड तक खींचें।"
+      },
+      "successSteps": [
+        { "type": "sfx", "key": "ignite" },
+        { "type": "audioMix", "target": "fireLoop", "toVolume": 0.70, "durationMs": 1200 },
+        {
+          "type": "dialogue",
+          "speaker": "Elder",
+          "text": {
+            "en": "Steady now. This is no wild blaze, this is a tool.",
+            "hi": "अब स्थिर रखो। यह जंगली आग नहीं, यह एक साधन है।"
+          }
+        }
+      ]
+    },
+    {
+      "type": "dialogue",
+      "speaker": "Narrator",
+      "text": {
+        "en": "Meat cooks, water warms, and the night watch grows calmer.",
+        "hi": "मांस पकता है, पानी गरम होता है और रात की पहरेदारी अधिक सुरक्षित हो जाती है।"
+      }
+    },
+    {
+      "type": "dialogue",
+      "speaker": "Historian",
+      "text": {
+        "en": "Controlled fire changed diet, safety, movement, and social learning.",
+        "hi": "नियंत्रित आग ने आहार, सुरक्षा, गतिशीलता और सामाजिक सीख को बदल दिया।"
+      }
+    },
+    {
+      "type": "montage",
+      "items": ["warmth", "protection", "cooking", "social_circle"],
+      "durationMs": 1800
+    },
+    {
+      "type": "dialogue",
+      "speaker": "Narrator",
+      "text": {
+        "en": "The first spark has become a shared institution of survival.",
+        "hi": "पहली चिंगारी अब जीवित रहने की साझा व्यवस्था बन चुकी है।"
+      }
+    },
+    { "type": "navigate", "to": "quiz", "quizId": "quiz_fire_001" }
   ],
-  "quizId": "quiz_fire_001"
+  "rewards": { "xp": 50, "badge": "First Spark" },
+  "navigate": { "quizId": "quiz_fire_001" }
 }

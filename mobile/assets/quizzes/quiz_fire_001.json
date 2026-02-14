@@ -1,63 +1,59 @@
 {
-  "id": "quiz_fire_001",
+  "quizId": "quiz_fire_001",
   "title": {
-    "en": "Fire & Early Society",
+    "en": "Fire and Early Society",
     "hi": "अग्नि और प्रारंभिक समाज"
   },
-  "xpPerCorrect": 20,
   "questions": [
     {
-      "id": "q1",
-      "question": {
-        "en": "What was a major impact of controlling fire in early human communities?",
-        "hi": "प्रारंभिक मानव समुदायों में आग को नियंत्रित करने का बड़ा प्रभाव क्या था?"
+      "prompt": {
+        "en": "Which of the following was NOT an advantage of controlled fire in early societies?",
+        "hi": "निम्न में से कौन-सा नियंत्रित आग का प्रारंभिक समाजों में लाभ नहीं था?"
       },
       "options": [
-        { "en": "Coin minting", "hi": "सिक्का निर्माण" },
-        { "en": "Improved cooking and nutrition", "hi": "बेहतर पकाना और पोषण" },
-        { "en": "Rail transport", "hi": "रेल परिवहन" },
-        { "en": "Writing systems", "hi": "लेखन प्रणालियाँ" }
+        { "id": "a", "text": { "en": "Internet communication", "hi": "इंटरनेट संचार" } },
+        { "id": "b", "text": { "en": "Protection from predators", "hi": "शिकारियों से सुरक्षा" } },
+        { "id": "c", "text": { "en": "Cooking food", "hi": "भोजन पकाना" } },
+        { "id": "d", "text": { "en": "Warmth in cold climates", "hi": "ठंडे क्षेत्रों में गर्माहट" } }
       ],
-      "correctIndex": 1,
+      "answerId": "a",
       "explanation": {
-        "en": "Controlled fire enabled cooking, improving digestion and calories from food.",
-        "hi": "नियंत्रित आग ने खाना पकाना संभव किया, जिससे पाचन और भोजन से ऊर्जा दोनों बढ़े।"
+        "en": "Internet communication is modern; fire mainly improved cooking, warmth, and safety.",
+        "hi": "इंटरनेट संचार आधुनिक है; आग का मुख्य लाभ पकाना, गर्माहट और सुरक्षा था।"
       }
     },
     {
-      "id": "q2",
-      "question": {
-        "en": "Why did hearths become socially important?",
-        "hi": "अग्निकुंड सामाजिक रूप से महत्वपूर्ण क्यों बने?"
+      "prompt": {
+        "en": "Why was carrying embers important before reliable ignition tools?",
+        "hi": "विश्वसनीय प्रज्वलन उपकरणों से पहले अंगारे साथ ले जाना क्यों महत्वपूर्ण था?"
       },
       "options": [
-        { "en": "They produced coins", "hi": "वे सिक्के बनाते थे" },
-        { "en": "They were used for satellites", "hi": "वे उपग्रहों के लिए उपयोग होते थे" },
-        { "en": "They became gathering points for sharing knowledge", "hi": "वे ज्ञान साझा करने के एकत्रीकरण बिंदु बने" },
-        { "en": "They replaced agriculture", "hi": "उन्होंने कृषि को बदल दिया" }
+        { "id": "a", "text": { "en": "To decorate cave walls", "hi": "गुफा की दीवारें सजाने के लिए" } },
+        { "id": "b", "text": { "en": "To preserve fire between camps", "hi": "शिविरों के बीच आग बचाए रखने के लिए" } },
+        { "id": "c", "text": { "en": "To signal satellites", "hi": "उपग्रहों को संकेत देने के लिए" } },
+        { "id": "d", "text": { "en": "To make metal coins", "hi": "धातु के सिक्के बनाने के लिए" } }
       ],
-      "correctIndex": 2,
+      "answerId": "b",
       "explanation": {
-        "en": "People gathered around fire for safety, warmth, and communication, strengthening social bonds.",
-        "hi": "लोग सुरक्षा, गर्मी और संवाद के लिए आग के आसपास इकट्ठा होते थे, जिससे सामाजिक संबंध मजबूत हुए।"
+        "en": "Embers helped communities restart fire quickly while moving or during bad weather.",
+        "hi": "अंगारों से समुदाय यात्रा या खराब मौसम में जल्दी आग फिर से जला सकते थे।"
       }
     },
     {
-      "id": "q3",
-      "question": {
-        "en": "Which of the following best matches the scene's core idea?",
-        "hi": "निम्न में से कौन-सा दृश्य के मूल विचार से सबसे अधिक मेल खाता है?"
+      "prompt": {
+        "en": "Controlled fire improved food, security, and social interaction. Which option best summarizes this?",
+        "hi": "नियंत्रित आग ने भोजन, सुरक्षा और सामाजिक सहभागिता सुधारी। इसे कौन-सा विकल्प सबसे बेहतर बताता है?"
       },
       "options": [
-        { "en": "Fire had no role in survival", "hi": "आग का जीवित रहने में कोई योगदान नहीं था" },
-        { "en": "Fire only mattered for decoration", "hi": "आग केवल सजावट के लिए थी" },
-        { "en": "Control of fire reshaped daily life and learning", "hi": "आग के नियंत्रण ने दैनिक जीवन और सीखने को बदल दिया" },
-        { "en": "Fire ended human migration", "hi": "आग ने मानव प्रवास समाप्त कर दिया" }
+        { "id": "a", "text": { "en": "Only cooking", "hi": "केवल खाना पकाना" } },
+        { "id": "b", "text": { "en": "Only protection", "hi": "केवल सुरक्षा" } },
+        { "id": "c", "text": { "en": "Only social bonding", "hi": "केवल सामाजिक जुड़ाव" } },
+        { "id": "d", "text": { "en": "All of the above", "hi": "उपरोक्त सभी" } }
       ],
-      "correctIndex": 2,
+      "answerId": "d",
       "explanation": {
-        "en": "The scene emphasizes survival, social organization, and knowledge transfer around controlled fire.",
-        "hi": "यह दृश्य नियंत्रित आग के इर्द-गिर्द जीवित रहने, सामाजिक संगठन और ज्ञान हस्तांतरण पर जोर देता है।"
+        "en": "Fire had multi-dimensional impact: cooking efficiency, safety, and stronger group communication.",
+        "hi": "आग का बहुआयामी प्रभाव था: बेहतर पकाना, सुरक्षा और समूह संवाद की मजबूती।"
       }
     }
   ]

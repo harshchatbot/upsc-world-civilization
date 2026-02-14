@@ -8,6 +8,7 @@ Repository layout:
 Use this file to track what was added/changed and which commands were run.
 
 ## Update Log
+- 2026-02-13: Implemented MVP Scene Engine architecture with bilingual JSON-driven scene/quiz flow, parallax UI, riverpod notifiers, go_router scene->quiz navigation, and just_audio mixer scaffolding.
 - 2026-02-13: Built bilingual Scene Player MVP (English/Hindi) with local JSON scene + quiz loading, language preference persistence, Riverpod scene progression controller, 2-track `just_audio` mixer, and 2.5D parallax scene rendering.
 - 2026-02-13: Fixed map asset filename mismatch so background loads (`world_ancient_parchment.png`).
 - 2026-02-13: Added map camera controls with initial focus, `focusOnNode` animation API, and post-quiz camera jump to next era using `/map?focusNodeId=...`.
@@ -18,6 +19,10 @@ Use this file to track what was added/changed and which commands were run.
 - 2026-02-13: Added root `README.md` and root `.gitignore`.
 
 ## Command Log
+- `cd mobile && flutter pub get`
+- `dart format mobile/lib mobile/test`
+- `cd mobile && flutter analyze`
+- `cd mobile && flutter test`
 - `cd mobile && flutter pub get`
 - `dart format mobile/lib mobile/test`
 - `cd mobile && flutter analyze`
