@@ -20,6 +20,9 @@ Use this file to track what was added/changed and which commands were run.
 
 ## Command Log
 - `cd mobile && flutter pub get`
+- `cd mobile && flutter analyze`
+- `cd mobile && flutter test`
+- `cd mobile && flutter pub get`
 - `dart format mobile/lib mobile/test`
 - `cd mobile && flutter analyze`
 - `cd mobile && flutter test`

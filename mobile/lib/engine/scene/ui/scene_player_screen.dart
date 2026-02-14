@@ -77,8 +77,6 @@ class _ScenePlayerScreenState extends ConsumerState<ScenePlayerScreen> {
     final AppLang lang = ref.watch(langControllerProvider);
     final SceneState sceneState = ref.watch(sceneControllerProvider);
 
-    ref.read(sceneControllerProvider.notifier).setLang(lang);
-
     if (sceneState.loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }

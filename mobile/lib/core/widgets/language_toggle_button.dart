@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../features/home/providers/language_provider.dart';
-import '../localization/app_language.dart';
+import '../../localization/lang.dart';
+import '../../localization/lang_controller.dart';
 
 class LanguageToggleButton extends ConsumerWidget {
   const LanguageToggleButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppLanguage current =
-        ref.watch(appLanguageProvider).value ?? AppLanguage.en;
+    final AppLang current = ref.watch(langControllerProvider);
 
-    return PopupMenuButton<AppLanguage>(
+    return PopupMenuButton<AppLang>(
       tooltip: 'Language',
       initialValue: current,
-      onSelected: (AppLanguage selected) {
-        ref.read(appLanguageProvider.notifier).setLanguage(selected);
+      onSelected: (AppLang selected) {
+        ref.read(langControllerProvider.notifier).setLang(selected);
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<AppLanguage>>[
-        const PopupMenuItem<AppLanguage>(
-          value: AppLanguage.en,
-          child: Text('English'),
-        ),
-        const PopupMenuItem<AppLanguage>(
-          value: AppLanguage.hi,
-          child: Text('हिंदी'),
-        ),
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<AppLang>>[
+        const PopupMenuItem<AppLang>(value: AppLang.en, child: Text('English')),
+        const PopupMenuItem<AppLang>(value: AppLang.hi, child: Text('हिंदी')),
       ],
       child: Chip(
-        label: Text(current.label),
+        label: Text(current == AppLang.en ? 'English' : 'हिंदी'),
         avatar: const Icon(Icons.language, size: 16),
       ),
     );

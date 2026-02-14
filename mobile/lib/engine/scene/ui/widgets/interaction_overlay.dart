@@ -16,6 +16,7 @@ class InteractionOverlay extends StatefulWidget {
 
 class _InteractionOverlayState extends State<InteractionOverlay> {
   Offset _emberPosition = const Offset(40, 110);
+  bool _completed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +50,47 @@ class _InteractionOverlayState extends State<InteractionOverlay> {
                 ),
                 Positioned.fromRect(
                   rect: target,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color(0xFFFFD080),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.local_fire_department,
-                        color: Color(0xFFFFD080),
-                      ),
-                    ),
+                  child: DragTarget<String>(
+                    onWillAcceptWithDetails:
+                        (DragTargetDetails<String> details) {
+                          return details.data == 'ember';
+                        },
+                    onAcceptWithDetails: (DragTargetDetails<String> details) {
+                      if (_completed) return;
+                      setState(() {
+                        _completed = true;
+                      });
+                      widget.onSuccess();
+                    },
+                    builder:
+                        (
+                          BuildContext context,
+                          List<String?> candidateData,
+                          List<dynamic> rejectedData,
+                        ) {
+                          final bool active = candidateData.isNotEmpty;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 120),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: active
+                                    ? const Color(0xFFFFF2C6)
+                                    : const Color(0xFFFFD080),
+                                width: active ? 3 : 2,
+                              ),
+                              borderRadius: BorderRadius.circular(40),
+                              color: active
+                                  ? const Color(0x33FFD080)
+                                  : Colors.transparent,
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.local_fire_department,
+                                color: Color(0xFFFFD080),
+                              ),
+                            ),
+                          );
+                        },
                   ),
                 ),
                 Positioned(
@@ -73,12 +101,7 @@ class _InteractionOverlayState extends State<InteractionOverlay> {
                     feedback: const _EmberToken(opacity: 1),
                     childWhenDragging: const _EmberToken(opacity: 0.25),
                     onDragEnd: (DraggableDetails details) {
-                      final Offset p = details.offset;
-                      final bool hit = target.contains(
-                        Offset(p.dx + 20, p.dy + 20),
-                      );
-                      if (hit) {
-                        widget.onSuccess();
+                      if (_completed) {
                         return;
                       }
                       setState(() {
