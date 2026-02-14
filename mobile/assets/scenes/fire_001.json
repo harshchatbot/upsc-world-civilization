@@ -1,0 +1,72 @@
+{
+  "id": "fire_001",
+  "nodeId": "stone_age",
+  "title": {
+    "en": "Discovery of Fire",
+    "hi": "अग्नि की खोज"
+  },
+  "backgroundAsset": "assets/maps/world_ancient_parchment.png",
+  "layers": [
+    {
+      "asset": "assets/maps/world_ancient_parchment.png",
+      "depth": 0.08,
+      "alignment": { "x": 0.5, "y": 0.5 },
+      "opacity": 0.12
+    },
+    {
+      "asset": "assets/maps/world_ancient_parchment.png",
+      "depth": 0.16,
+      "alignment": { "x": 0.52, "y": 0.5 },
+      "opacity": 0.08
+    }
+  ],
+  "audio": {
+    "ambientAsset": "assets/audio/ember_loop.mp3",
+    "musicAsset": "assets/audio/drone_loop.mp3",
+    "ambientVolume": 0.55,
+    "musicVolume": 0.0
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "type": "dialogue",
+      "text": {
+        "en": "Night falls. A spark catches dry grass and the first controlled flame steadies in your camp.",
+        "hi": "रात होती है। सूखी घास में चिंगारी लगती है और आपके शिविर में पहली नियंत्रित आग स्थिर हो जाती है।"
+      }
+    },
+    {
+      "id": "s2",
+      "type": "prompt",
+      "text": {
+        "en": "Observe how fire changes food, safety, and social gathering patterns.",
+        "hi": "देखिए कि आग भोजन, सुरक्षा और सामाजिक एकत्रीकरण के तरीके कैसे बदलती है।"
+      },
+      "promptLabel": {
+        "en": "Observe the Hearth",
+        "hi": "अग्निकुंड का निरीक्षण करें"
+      }
+    },
+    {
+      "id": "s3",
+      "type": "dialogue",
+      "text": {
+        "en": "With warmth and cooked food, mobility and survival improve. Knowledge now spreads around the hearth.",
+        "hi": "गर्मी और पके भोजन के साथ गतिशीलता और जीवित रहने की क्षमता बढ़ती है। अब ज्ञान अग्निकुंड के आसपास फैलता है।"
+      }
+    },
+    {
+      "id": "s4",
+      "type": "quiz",
+      "text": {
+        "en": "Checkpoint unlocked. Test your understanding before moving to the next era.",
+        "hi": "जांच बिंदु खुल गया है। अगले युग में जाने से पहले अपनी समझ परखें।"
+      },
+      "cta": {
+        "en": "Start Quiz",
+        "hi": "क्विज़ शुरू करें"
+      }
+    }
+  ],
+  "quizId": "quiz_fire_001"
+}

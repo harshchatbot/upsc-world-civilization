@@ -73,8 +73,7 @@ class _CivilizationMapScreenState extends ConsumerState<CivilizationMapScreen> {
 
               return RealisticWorldMap(
                 controller: _mapController,
-                backgroundAssetPath:
-                    'assets/maps/world_ancient_parchment.png',
+                backgroundAssetPath: 'assets/maps/world_ancient_parchment.png',
                 initialScale: 1.4,
                 nodes: mapNodes,
                 onNodeTap: (RealisticMapNode tappedNode) {

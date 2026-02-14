@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../features/home/presentation/home_screen.dart';
 import '../features/map/presentation/civilization_map_screen.dart';
 import '../features/quiz/presentation/quiz_screen.dart';
@@ -27,15 +28,18 @@ final GoRouter appRouter = GoRouter(
       name: 'scene',
       builder: (BuildContext context, GoRouterState state) {
         final String nodeId = state.pathParameters['nodeId']!;
-        return SceneScreen(nodeId: nodeId);
+        final String sceneId =
+            state.uri.queryParameters['sceneId'] ?? 'fire_001';
+        return SceneScreen(nodeId: nodeId, sceneId: sceneId);
       },
     ),
     GoRoute(
-      path: '/quiz/:nodeId',
+      path: '/quiz/:quizId',
       name: 'quiz',
       builder: (BuildContext context, GoRouterState state) {
-        final String nodeId = state.pathParameters['nodeId']!;
-        return QuizScreen(nodeId: nodeId);
+        final String quizId = state.pathParameters['quizId']!;
+        final String? nodeId = state.uri.queryParameters['nodeId'];
+        return QuizScreen(quizId: quizId, nodeId: nodeId);
       },
     ),
   ],

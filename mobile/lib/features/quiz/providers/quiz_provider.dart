@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/models/quiz_question.dart';
-import '../../../data/repositories/content_repository.dart';
 
-final quizByNodeProvider = FutureProvider.family<List<QuizQuestion>, String>((
+import '../../../data/models/localized_quiz.dart';
+import '../../../data/repositories/scene_repository.dart';
+
+final localizedQuizProvider = FutureProvider.family<LocalizedQuiz, String>((
   Ref ref,
-  String nodeId,
+  String quizId,
 ) async {
-  return ref.read(contentRepositoryProvider).fetchQuizByNodeId(nodeId);
+  return ref.read(sceneRepositoryProvider).loadQuiz(quizId);
 });

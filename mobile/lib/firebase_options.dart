@@ -59,5 +59,4 @@ class DefaultFirebaseOptions {
     projectId: 'upsc-world-civilization',
     storageBucket: 'upsc-world-civilization.firebasestorage.app',
   );
-
 }

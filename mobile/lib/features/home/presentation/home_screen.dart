@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/widgets/language_toggle_button.dart';
 import '../../../core/utils/level_utils.dart';
 import '../../../data/models/user_progress.dart';
 import '../providers/home_providers.dart';
@@ -29,6 +31,10 @@ class HomeScreen extends ConsumerWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  const Align(
+                    alignment: Alignment.topRight,
+                    child: LanguageToggleButton(),
+                  ),
                   const Spacer(),
                   Text(
                     'UPSC World: Civilization',

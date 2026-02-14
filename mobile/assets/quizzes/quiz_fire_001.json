@@ -1,0 +1,64 @@
+{
+  "id": "quiz_fire_001",
+  "title": {
+    "en": "Fire & Early Society",
+    "hi": "अग्नि और प्रारंभिक समाज"
+  },
+  "xpPerCorrect": 20,
+  "questions": [
+    {
+      "id": "q1",
+      "question": {
+        "en": "What was a major impact of controlling fire in early human communities?",
+        "hi": "प्रारंभिक मानव समुदायों में आग को नियंत्रित करने का बड़ा प्रभाव क्या था?"
+      },
+      "options": [
+        { "en": "Coin minting", "hi": "सिक्का निर्माण" },
+        { "en": "Improved cooking and nutrition", "hi": "बेहतर पकाना और पोषण" },
+        { "en": "Rail transport", "hi": "रेल परिवहन" },
+        { "en": "Writing systems", "hi": "लेखन प्रणालियाँ" }
+      ],
+      "correctIndex": 1,
+      "explanation": {
+        "en": "Controlled fire enabled cooking, improving digestion and calories from food.",
+        "hi": "नियंत्रित आग ने खाना पकाना संभव किया, जिससे पाचन और भोजन से ऊर्जा दोनों बढ़े।"
+      }
+    },
+    {
+      "id": "q2",
+      "question": {
+        "en": "Why did hearths become socially important?",
+        "hi": "अग्निकुंड सामाजिक रूप से महत्वपूर्ण क्यों बने?"
+      },
+      "options": [
+        { "en": "They produced coins", "hi": "वे सिक्के बनाते थे" },
+        { "en": "They were used for satellites", "hi": "वे उपग्रहों के लिए उपयोग होते थे" },
+        { "en": "They became gathering points for sharing knowledge", "hi": "वे ज्ञान साझा करने के एकत्रीकरण बिंदु बने" },
+        { "en": "They replaced agriculture", "hi": "उन्होंने कृषि को बदल दिया" }
+      ],
+      "correctIndex": 2,
+      "explanation": {
+        "en": "People gathered around fire for safety, warmth, and communication, strengthening social bonds.",
+        "hi": "लोग सुरक्षा, गर्मी और संवाद के लिए आग के आसपास इकट्ठा होते थे, जिससे सामाजिक संबंध मजबूत हुए।"
+      }
+    },
+    {
+      "id": "q3",
+      "question": {
+        "en": "Which of the following best matches the scene's core idea?",
+        "hi": "निम्न में से कौन-सा दृश्य के मूल विचार से सबसे अधिक मेल खाता है?"
+      },
+      "options": [
+        { "en": "Fire had no role in survival", "hi": "आग का जीवित रहने में कोई योगदान नहीं था" },
+        { "en": "Fire only mattered for decoration", "hi": "आग केवल सजावट के लिए थी" },
+        { "en": "Control of fire reshaped daily life and learning", "hi": "आग के नियंत्रण ने दैनिक जीवन और सीखने को बदल दिया" },
+        { "en": "Fire ended human migration", "hi": "आग ने मानव प्रवास समाप्त कर दिया" }
+      ],
+      "correctIndex": 2,
+      "explanation": {
+        "en": "The scene emphasizes survival, social organization, and knowledge transfer around controlled fire.",
+        "hi": "यह दृश्य नियंत्रित आग के इर्द-गिर्द जीवित रहने, सामाजिक संगठन और ज्ञान हस्तांतरण पर जोर देता है।"
+      }
+    }
+  ]
+}
